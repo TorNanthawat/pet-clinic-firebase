@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pet Clinic Firebase
+
+Demo : [Pet Clinic App](https://pet-clinic-firebase-tordev.vercel.app/)
+
+## Overview
+
+Pet Clinic Firebase is a web application built with Next.js and Firebase. This project serves as a platform for managing pet clinic operations, providing features for pet owners and clinic staff.
+
+## Features
+
+- User authentication with Firebase
+- Image management using Cloudinary
+- Responsive design with Tailwind CSS
+- Linting and TypeScript support
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Make sure you have the following installed:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Node.js (version 14 or higher)
+- npm (Node package manager)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Installation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Clone the repository:
 
-## Learn More
+   ```bash
+   git clone https://github.com/yourusername/pet-clinic-firebase.git
+   cd pet-clinic-firebase
 
-To learn more about Next.js, take a look at the following resources:
+2. Install the dependencies:
+    ```bash
+    npm install
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Running the Application
+To run the application in development mode, use the following command:
+  ```bash
+  npm run dev
+  ```
+Open your browser and navigate to http://localhost:3000 to see the application in action.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Building for Production
+To build the application for production, run:
+  ```bash
+  npm run build
+  ```
+After building, you can start the production server with:
+  ```bash
+  npm run start
+  ```
 
-## Deploy on Vercel
+### Linting
+To run the linter, use:
+  ```bash
+  npm run lint
+  ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Dependencies
+This project uses the following dependencies:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Next.js: A React framework for server-rendered applications.
+- Firebase: A platform for building web and mobile applications.
+- Tailwind CSS: A utility-first CSS framework for styling.
+- Cloudinary: A cloud service for managing images and videos.
+
+### Development
+This project is set up with TypeScript and ESLint for better development practices. Make sure to follow the coding standards defined in the ESLint configuration.
+
+### License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+### Acknowledgments
+- [Next.js](https://nextjs.org/)
+- [Firebase](https://firebase.google.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Cloudinary](https://cloudinary.com/)
+- [MIT](https://choosealicense.com/licenses/mit/)
