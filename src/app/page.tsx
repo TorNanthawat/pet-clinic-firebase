@@ -1,101 +1,129 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+import Navbar from "../components/Navbar"
+import { useEffect, useState } from "react"
+import { db } from "../lib/firebase"
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore"
+import Link from "next/link"
+import { Pet } from "../types/Pet"
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+const Home = () => {
+    const [pets, setPets] = useState<Pet[]>([])
+    const [loading, setLoading] = useState<boolean>(true)
+
+    const fetchPets = async () => {
+        try {
+            const petsCollection = collection(db, "pets")
+            const petSnapshot = await getDocs(petsCollection)
+            const petList = petSnapshot.docs.map((doc) => {
+                const data = doc.data()
+                return {
+                    ...data,
+                    id: doc.id,
+                } as Pet
+            })
+            console.log("Fetched pets:", petList)
+            setPets(petList)
+        } catch (error) {
+            console.error("Error fetching pets:", error)
+            setPets([])
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        fetchPets()
+    }, [])
+
+    const handleDelete = async (id: string) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this pet?")
+        if (confirmDelete) {
+            try {
+                await deleteDoc(doc(db, "pets", id))
+                setPets(pets.filter((pet) => pet.id !== id))
+                console.log("Document deleted with ID: ", id)
+            } catch (e) {
+                console.error("Error deleting document: ", e)
+            }
+        } else {
+            console.log("Delete action was canceled.")
+        }
+    }
+
+    return (
+        <div>
+            <div className="py-10 px-6 md:px-28 lg:px-[30%]">
+                <div className="flex flex-col gap-3 justify-center items-center mb-10">
+                    <h1 className="text-2xl text-gray-700 font-bold cursor-default">Add pet information</h1>
+                    <Link href="/add-pet" className="btn-primary">
+                        Add Pet
+                    </Link>
+                </div>
+                <ul className="flex flex-col gap-3 bg-white p-4 md:p-6 lg:p-8 rounded-2xl shadow-md">
+                    <h1 className="font-bold text-gray-700">Pets List</h1>
+                    {loading ? (
+                        <li className="text-center text-gray-500 animate-bounce py-4">Loading...</li>
+                    ) : pets.length === 0 ? (
+                        <li className="text-center text-gray-500 py-4 border rounded-lg">No pet information</li>
+                    ) : (
+                        pets.map((pet) => {
+                            console.log("pet", pet.id)
+                            return (
+                                <li
+                                    key={pet.id}
+                                    className="flex flex-col gap-6 justify-between shadow-md rounded-xl 
+                                    border p-4 lg:p-8 text-gray-700 border-gray-200 duration-500 hover:scale-105 
+                                    cursor-default"
+                                >
+                                    <div className="flex justify-between">
+                                        <div className="flex flex-col gap-1 text-sm lg:text-base">
+                                            <p>
+                                                <strong>Pet Name : </strong>
+                                                {pet.petName}
+                                            </p>
+                                            <p>
+                                                <strong>Type : </strong>
+                                                {pet.petType}
+                                            </p>
+                                            <p>
+                                                <strong>Owner Name : </strong>
+                                                {pet.ownerName}
+                                            </p>
+                                            <p>
+                                                <strong>Owner Phone : </strong>
+                                                {pet.ownerPhone}
+                                            </p>
+                                        </div>
+                                        <img
+                                            src={pet.petImageUrl}
+                                            alt="pet"
+                                            className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-lg object-cover"
+                                        />
+                                    </div>
+
+                                    <div className="flex w-full text-white items-center justify-center text-center">
+                                        <Link
+                                            className="w-full duration-300 py-1 rounded-l-xl bg-sky-500 hover:bg-sky-600"
+                                            href={`/edit-pet/${pet.id}`}
+                                        >
+                                            Edit
+                                        </Link>
+                                        <button
+                                            className="w-full duration-300 py-1 rounded-r-xl bg-red-500 hover:bg-red-600 "
+                                            onClick={() => handleDelete(pet.id)}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </li>
+                            )
+                        })
+                    )}
+                </ul>
+            </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+    )
 }
+
+export default Home
