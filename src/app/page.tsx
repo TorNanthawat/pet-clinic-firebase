@@ -1,11 +1,11 @@
 "use client"
 
-import Navbar from "../components/Navbar"
 import { useEffect, useState } from "react"
 import { db } from "../lib/firebase"
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore"
 import Link from "next/link"
 import { Pet } from "../types/Pet"
+import Image from "next/image"
 
 const Home = () => {
     const [pets, setPets] = useState<Pet[]>([])
@@ -95,9 +95,11 @@ const Home = () => {
                                                 {pet.ownerPhone}
                                             </p>
                                         </div>
-                                        <img
+                                        <Image
                                             src={pet.petImageUrl}
                                             alt="pet"
+                                            width={500}
+                                            height={300}
                                             className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-lg object-cover"
                                         />
                                     </div>

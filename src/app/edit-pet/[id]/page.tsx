@@ -11,10 +11,9 @@ import { uploadImage } from "@/lib/uploadImage"
 
 type Props = {
     params: { id: string }
-    searchParams: { [key: string]: string | string[] | undefined }
 }
 
-export default function EditPet({ params, searchParams }: Props) {
+export default function EditPet({ params }: Props) {
     const [step, setStep] = useState(1)
     const router = useRouter()
     const [selectedImage, setSelectedImage] = useState<File | null>(null)
